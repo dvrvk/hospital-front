@@ -28,13 +28,13 @@ export default function SignUp() {
       email,
       password,
     };
-
+    console.log(nuevoUsuario);
     fetch("http://localhost:8080/usuarios", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(nuevoUsuario),
+      body: JSON.stringify(nuevoUsuario)
     })
       .then((res) => {
         if (!res.ok) {

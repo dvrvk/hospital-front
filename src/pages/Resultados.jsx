@@ -6,20 +6,19 @@ import { usePaciente } from "../context/PacienteContext";
 export default function Resultados() {
   const { paciente, zonacontext, usuariocontext, diagnostico } = usePaciente();
 
-  useEffect(() => {
+  const handleGuardar = () => {
+
     if (paciente && usuariocontext && zonacontext && diagnostico) {
       const casoClinico = {
         zona: zonacontext,
         diagnostico: diagnostico,
-        descripcionTexto: "", // si lo tienes o lo quieres dejar en blanco por ahora
-        paciente: { id: paciente.id },
-        usuario: { id: usuariocontext.id },
         consulta: {
           fechaConsulta: new Date().toISOString().split("T")[0],
-          paciente: { id: paciente.id },
-          usuario: { id: usuariocontext.id }
+          pacienteId: paciente.id ,
+          usuarioId: usuariocontext.id
         }
-      };      
+
+      };
 
       fetch("http://localhost:8080/casos", {
         method: "POST",
@@ -32,7 +31,7 @@ export default function Resultados() {
         .then((data) => console.log("Caso clínico guardado:", data))
         .catch((err) => console.error("Error al guardar caso clínico:", err));
     }
-  }, [paciente, zonacontext, usuariocontext, diagnostico]);
+  }
 
   return (
     <div style={styles.container}>
@@ -51,7 +50,9 @@ export default function Resultados() {
         <p><strong>Fecha de consulta:</strong> {new Date().toLocaleDateString()}</p>
         <p><strong>Diagnóstico:</strong> {diagnostico}</p>
       </div>
-
+      <button style={styles.botonAzul} onClick={handleGuardar}>
+        GUARDAR
+      </button>
       <Navegador />
     </div>
   );

@@ -24,13 +24,12 @@ export default function Login() {
     })
       .then((res) => res.json())
       .then((data) => {
-        if(data.status == 200) {
+        console.log(data)
           setUsuariocontext(data);
           alert("Has iniciado sesión");
           navigate("/inicio");
-        } else {
-          alert("Error: usuario o contraseña incorrectos")
-        }
+
+
         
       })
       .catch((err) => {
