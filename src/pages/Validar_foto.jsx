@@ -1,11 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderPasos from "../components/HeaderPasos";
+import { usePaciente } from "../context/PacienteContext";
 
 export default function Validar_foto() {
   const navigate = useNavigate();
-
+  const { setFotoTomada } = usePaciente();
   const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [foto, setFoto] = useState(null);
 
   useEffect(() => {
     const openCamera = async () => {
@@ -23,13 +26,25 @@ export default function Validar_foto() {
     openCamera();
   }, []);
 
-  const handleSiguiente = () => {
-    navigate("/analisis-caso"); // Ruta siguiente
+  const capturarFoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+
+    if (!video || !canvas) return;
+
+    const context = canvas.getContext("2d");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const dataUrl = canvas.toDataURL("image/png");
+    setFoto(dataUrl);
   };
 
-  const handleRehacer = () => {
-    console.log("Rehacer foto...");
-    // Aquí irá la lógica para rehacer foto en el futuro
+  const handleSiguiente = () => {
+    setFotoTomada(foto); // Guardar la foto en el contexto
+    navigate("/analisis-caso"); // Ruta siguiente
   };
 
   return (
@@ -42,24 +57,27 @@ export default function Validar_foto() {
         style={styles.video}
       />
       <div style={styles.imagePlaceholder}>
-        {/* Aquí se cargarán las fotos más adelante */}
+        {foto && (
+          <img
+            src={foto}
+            alt="Foto capturada"
+            style={{ width: "90%", maxWidth: "300px", border: "2px solid #ccc", margin: "20px auto", borderRadius: "5px" }}
+          />
+        )}
       </div>
+      <canvas ref={canvasRef} style={{ display: "none" }} />
 
-      <div style={styles.addPhoto}>
-        <button style={styles.addButton}>+</button>
-        <span style={styles.addText}>Añade más fotos</span>
-      </div>
 
       <p style={styles.descripcion}>
         Asegúrate de que la foto esté clara y que la condición de la piel no esté cubierta por cabello o ropa.
       </p>
 
       <div style={styles.botones}>
-        <button style={styles.siguiente} onClick={handleSiguiente}>
-          SIGUIENTE
+        <button onClick={capturarFoto} style={styles.siguiente}>
+          TOMAR FOTO
         </button>
-        <button style={styles.rehacer} onClick={handleRehacer}>
-          REHACER FOTO
+        <button style={styles.rehacer} onClick={handleSiguiente}>
+          SIGUIENTE
         </button>
       </div>
     </div>
@@ -110,6 +128,7 @@ const styles = {
     color: "#333",
     margin: "0 auto 25px",
     width: "85%",
+    marginTop: "10px",
   },
   botones: {
     display: "flex",
@@ -131,5 +150,12 @@ const styles = {
     color: "#3076F8",
     borderRadius: "5px",
     cursor: "pointer",
+  },
+  video: {
+    width: "100%", 
+    maxWidth: "600px", 
+    height: "auto", 
+    borderRadius: "5px", 
+    margin: "20px auto",
   },
 };

@@ -9,7 +9,7 @@ export default function AnalisisCaso() {
   const [diagnostico, setDiagnostico] = useState("");
   const [mostrarOtro, setMostrarOtro] = useState(false);
   const [otroDiagnostico, setOtroDiagnostico] = useState("");
-  const { setDiagnostico: setDiagnosticoContext } = usePaciente(); // esto faltaba
+  const { setDiagnostico: setDiagnosticoContext, fotoTomada } = usePaciente(); // esto faltaba
 
   const handleSiguiente = () => {
     const diagnosticoFinal = diagnostico === "Otro" ? otroDiagnostico : diagnostico;
@@ -25,12 +25,24 @@ export default function AnalisisCaso() {
     <div style={styles.container}>
       <HeaderPasos titulo="Análisis del caso" pasoActual={4} />
 
-      <p style={styles.titulo}>Resultado final de la(s) foto(s)</p>
+      <p style={styles.titulo}>Resultado final de la foto</p>
 
       <div style={styles.galeria}>
-        <div style={styles.cuadroFoto}></div>
-        <div style={styles.cuadroFoto}></div>
-        <div style={styles.cuadroFoto}></div>
+        {fotoTomada ? (
+          <img
+            src={fotoTomada}
+            alt="Foto capturada"
+            style={{
+              width: "80px",
+              height: "80px",
+              objectFit: "cover",
+              borderRadius: "5px",
+              border: "2px solid #ccc",
+            }}
+          />
+        ) : (
+          <p>No hay foto disponible</p>
+        )}
       </div>
 
       {!mostrarOtro && (

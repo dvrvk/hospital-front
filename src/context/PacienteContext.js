@@ -10,6 +10,7 @@ export const PacienteProvider = ({ children }) => {
   const [usuariocontext, setUsuariocontext] = useState(null);
   const [diagnostico, setDiagnostico] = useState(null);
   const [fecha, setFecha] = useState(null);
+  const [fotoTomada, setFotoTomada] = useState(null);
   
   return (
     <PacienteContext.Provider value={{
@@ -17,7 +18,8 @@ export const PacienteProvider = ({ children }) => {
       zonacontext, setZonacontext,
       usuariocontext, setUsuariocontext,
       diagnostico, setDiagnostico,
-      fecha, setFecha
+      fecha, setFecha,
+      fotoTomada, setFotoTomada
     }}>
       {children}
     </PacienteContext.Provider>

@@ -4,19 +4,23 @@ import Navegador from "../components/Navegador";
 import { usePaciente } from "../context/PacienteContext";
 
 export default function Resultados() {
-  const { paciente, zonacontext, usuariocontext, diagnostico } = usePaciente();
+  const { paciente, zonacontext, usuariocontext, diagnostico, fotoTomada } = usePaciente();
 
   const handleGuardar = () => {
-
+    console.log(paciente)
+    console.log(zonacontext)
+    console.log(usuariocontext)
+    console.log(diagnostico)
     if (paciente && usuariocontext && zonacontext && diagnostico) {
       const casoClinico = {
         zona: zonacontext,
         diagnostico: diagnostico,
         consulta: {
           fechaConsulta: new Date().toISOString().split("T")[0],
-          pacienteId: paciente.id ,
+          pacienteId: paciente.id,
           usuarioId: usuariocontext.id
-        }
+        },
+        img: fotoTomada,
 
       };
 
@@ -49,6 +53,23 @@ export default function Resultados() {
         <p>Edad: {paciente?.edad}</p>
         <p><strong>Fecha de consulta:</strong> {new Date().toLocaleDateString()}</p>
         <p><strong>Diagnóstico:</strong> {diagnostico}</p>
+        <div style={styles.galeria}>
+          {fotoTomada ? (
+            <img
+              src={fotoTomada}
+              alt="Foto capturada"
+              style={{
+                width: "80px",
+                height: "80px",
+                objectFit: "cover",
+                borderRadius: "5px",
+                border: "2px solid #ccc",
+              }}
+            />
+          ) : (
+            <p>No hay foto disponible</p>
+          )}
+        </div>
       </div>
       <button style={styles.botonAzul} onClick={handleGuardar}>
         GUARDAR
