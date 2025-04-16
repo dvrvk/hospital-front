@@ -2,16 +2,16 @@ import React, { useEffect } from "react";
 import HeaderPasos from "../components/HeaderPasos";
 import Navegador from "../components/Navegador";
 import { usePaciente } from "../context/PacienteContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Resultados() {
   const { paciente, zonacontext, usuariocontext, diagnostico, fotoTomada } = usePaciente();
+  const [alerta, setAlerta] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleGuardar = () => {
-    console.log(paciente)
-    console.log(zonacontext)
-    console.log(usuariocontext)
-    console.log(diagnostico)
     if (paciente && usuariocontext && zonacontext && diagnostico) {
+      console.log("Guardar caso clínico");
       const casoClinico = {
         zona: zonacontext,
         diagnostico: diagnostico,
@@ -32,19 +32,25 @@ export default function Resultados() {
         body: JSON.stringify(casoClinico),
       })
         .then((res) => res.json())
-        .then((data) => console.log("Caso clínico guardado:", data))
-        .catch((err) => console.error("Error al guardar caso clínico:", err));
+        .then((data) => {
+          console.log("Caso clínico guardado:", data)
+          setAlerta(true);
+          setTimeout(() => {
+            navigate("/archivos-casos"); // Redirigir a la página de archivos de casos
+          }, 4000); 
+    })
+        .catch((err) => alert.error("Error al guardar caso clínico"));
     }
   }
 
   return (
     <div style={styles.container}>
       <HeaderPasos titulo="Resultados" pasoActual={5} />
-
+      {alerta && (
       <div style={styles.alerta}>
         <p style={styles.tituloAlerta}>✅ Caso guardado en <strong>{paciente?.numeroHistoria || "[nº historia]"}</strong></p>
         <p style={styles.subtextoAlerta}>Guardado en Archivos de casos</p>
-      </div>
+      </div>)}
 
       <div style={styles.card}>
         <p><strong>Información del paciente</strong></p>
@@ -84,6 +90,7 @@ const styles = {
     padding: "20px",
     backgroundColor: "#fff",
     minHeight: "100vh",
+    marginTop: "20px",
   },
   alerta: {
     backgroundColor: "#DFF6DD",
@@ -105,6 +112,7 @@ const styles = {
     color: "#333"
   },
   card: {
+    margin: "20px 0",
     border: "1px solid #000",
     borderRadius: "6px",
     padding: "15px",

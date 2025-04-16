@@ -5,7 +5,11 @@ export default function ArchivoCasos() {
   const [casos, setCasos] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/casos")
+    fetch("http://localhost:8080/casos", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }})
       .then((res) => res.json())
       .then((data) => setCasos(data))
       .catch((err) => console.error("Error al cargar casos:", err));
@@ -22,13 +26,20 @@ export default function ArchivoCasos() {
       />
       {casos.map((caso) => (
         <div key={caso.id} style={styles.caso}>
-          <div style={styles.cuadroFoto}></div>
+          <div style={styles.cuadroFoto}>
+            <img
+              src={caso.imagenes[0].url}
+              alt="Imagen caso"
+              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" }}
+            />
+          </div>
           <div style={styles.info}>
             <p><strong>Caso {String(caso.id).padStart(8, '0')}</strong></p>
-            <p>Edad: {caso.paciente?.edad}</p>
-            <p>Doctor: {caso.usuario?.nombre || "Desconocido"}</p>
-            <p>Fecha consulta: {caso.fecha?.split("T")[0] || "Sin fecha"}</p>
+            <p>Edad: {caso.consulta.paciente?.edad}</p>
+            <p>Doctor: {caso.consulta.usuario?.nombre || "Desconocido"}</p>
+            <p>Fecha consulta: {caso.consulta.fechaConsulta?.split("T")[0] || "Sin fecha"}</p>
             <p>Diagnóstico: {caso.diagnostico || "Pendiente"}</p>
+            <p>Zona: {caso.zona || "Pendiente"}</p>
           </div>
           <button style={styles.editar}>EDITAR</button>
         </div>
